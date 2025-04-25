@@ -11,6 +11,7 @@
   import type { Feature } from 'geojson';
   import { debounce } from '../../helpers/debounce';
   import DistrictMetadata from './DistrictMetadata.svelte';
+  import NewsComponent from './NewsComponent.svelte';
 
   let districtsIntersectingPolygon: Feature[];
   let isLoading = false;
@@ -70,11 +71,12 @@
     selectedDistrict.set(null);
   }
 
+  $: districtTitle = getDistrictTitle($selectedBoundaryMap, $selectedDistrict);
   $: debounceQueryInterDist($selectedBoundaryMap, $selectedDistrict);
 </script>
 
 <SidebarHeader
-  title={getDistrictTitle($selectedBoundaryMap, $selectedDistrict)}
+  title={districtTitle}
   onBack={handleBack}
 />
 <div class="py-4">
@@ -85,4 +87,8 @@
     />
   {/if}
   <OverlapList districts={districtsIntersectingPolygon} {isLoading} />
+  
+  {#if $selectedDistrict}
+    <NewsComponent districtName={districtTitle} />
+  {/if}
 </div>
